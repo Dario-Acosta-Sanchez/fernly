@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fernly — Vivero urbano y plantas de interior en Córdoba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: { neutral: {
+    200:'#3a352c', 300:'#5b5547', 400:'#7d7669', 500:'#a39b8c', 700:'#e3ddd0', 900:'#f1ece2'
+  } } } } }
+</script>
+<style>
+:root{
+  --bg:#f6f1e7; --card:#fffdf8; --line:#e6dfd0;
+  --ink:#33312a; --ink-soft:#6b6557;
+  --leaf:#3f6b4f; --leaf2:#2f5640;
+  --terracotta:#c1693f; --terracotta2:#a8552f;
+  --moss:#8a9a5b;
+}
+*{font-family:'Karla',sans-serif}
+h1,h2,h3{font-family:'Newsreader',serif;font-weight:500;letter-spacing:-.01em}
+body{background:var(--bg);color:var(--ink)}
+.glass{background:rgba(255,253,248,.6);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border:1px solid rgba(255,255,255,.7);box-shadow:0 6px 26px -14px rgba(80,70,50,.25)}
+.leaf{color:var(--leaf)}
+.leaf-bg{background:var(--leaf)}
+.terracotta{color:var(--terracotta)}
+.btn-primary{background:var(--leaf);color:#fbf8f0;font-weight:600;transition:all .2s;border-radius:999px;padding:14px 30px;border:none;cursor:pointer;box-shadow:0 10px 26px -10px rgba(63,107,79,.45)}
+.btn-primary:hover{background:var(--leaf2);transform:translateY(-2px);box-shadow:0 14px 32px -10px rgba(63,107,79,.55)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;transition:all .3s;box-shadow:0 4px 22px -14px rgba(90,80,55,.16)}
+.card:hover{border-color:var(--leaf);transform:translateY(-4px);box-shadow:0 16px 32px -16px rgba(63,107,79,.25)}
+.pulse-dot{display:inline-block;width:8px;height:8px;border-radius:9999px;background:var(--moss);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(138,154,91,.5)}70%{box-shadow:0 0 0 10px rgba(138,154,91,0)}100%{box-shadow:0 0 0 0 rgba(138,154,91,0)}}
+.opt-btn{background:#fffdf8;border:1px solid var(--line);border-radius:14px;padding:14px 18px;transition:all .2s;cursor:pointer;font-weight:600;color:var(--ink-soft);text-align:left}
+.opt-btn:hover{border-color:var(--leaf);color:var(--ink)}
+.opt-btn.active{background:var(--leaf);color:#fbf8f0;border-color:var(--leaf);box-shadow:0 6px 20px -6px rgba(63,107,79,.45)}
+.fade-in{animation:fadein .5s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.pop-in{animation:popin .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popin{0%{opacity:0;transform:scale(.7) rotate(-6deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.pot{border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:inset -6px -8px 16px rgba(0,0,0,.08), 0 8px 18px -8px rgba(90,75,50,.3)}
+.leaf-stamp{width:46px;height:46px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.leaf-stamp.empty{border:2px dashed #d8cfbb;color:#d8cfbb}
+.leaf-stamp.filled{box-shadow:0 8px 18px -6px rgba(63,107,79,.4)}
+.bar-track{background:#ece4d4;border-radius:9999px;overflow:hidden;height:14px}
+.bar-fill{background:linear-gradient(90deg,var(--leaf),var(--moss));height:100%;border-radius:9999px;transition:width 1s ease}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#ddd2bc;border-radius:8px}
+
+/* HOJAS A LA DERIVA — siluetas flotando despacio por el hero */
+.leaves{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.leafdrift{position:absolute;top:-12vh;font-size:1.6rem;opacity:.35;animation:drift linear infinite;filter:saturate(.8)}
+@keyframes drift{
+  0%{transform:translate(0,0) rotate(0deg);opacity:0}
+  10%{opacity:.4}
+  50%{transform:translate(40px,55vh) rotate(160deg)}
+  90%{opacity:.3}
+  100%{transform:translate(-30px,118vh) rotate(330deg);opacity:0}
+}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<nav class="fixed top-0 inset-x-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full leaf-bg flex items-center justify-center font-black text-[#fbf8f0] text-lg" style="font-family:'Newsreader',serif">F</div>
+      <span class="font-semibold text-xl tracking-tight" style="font-family:'Newsreader',serif">Fern<span class="leaf italic">ly</span></span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-300">
+      <a href="#match" class="hover:text-[var(--ink)] transition">Encuentra tu planta</a>
+      <a href="#semana" class="hover:text-[var(--ink)] transition">Plantas de la semana</a>
+      <a href="#riego" class="hover:text-[var(--ink)] transition">Club de Riego</a>
+      <a href="#opiniones" class="hover:text-[var(--ink)] transition">Opiniones</a>
+    </div>
+    <a href="#match" class="btn-primary text-sm">Visítanos 🌿</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="pt-40 pb-24 px-6 relative overflow-hidden">
+  <div class="absolute inset-0 -z-10" style="background:radial-gradient(circle at 16% 22%, rgba(63,107,79,.14), transparent 45%), radial-gradient(circle at 84% 68%, rgba(193,105,63,.12), transparent 50%);"></div>
+  <div class="leaves" id="leaves"></div>
+  <div class="max-w-5xl mx-auto text-center relative">
+    <span class="inline-block glass rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide text-[var(--ink-soft)] mb-6">🌿 Vivero de barrio · plantas de interior y exterior · Córdoba capital</span>
+    <h1 class="text-4xl md:text-6xl font-medium leading-tight tracking-tight mb-6">
+      Plantas que <span class="leaf italic">eligen contigo</span>, cuidadas en casa antes de llegar a la tuya
+    </h1>
+    <p class="text-lg text-[var(--ink-soft)] max-w-2xl mx-auto mb-10">
+      En Fernly cada maceta pasa semanas creciendo en nuestro patio antes de salir a la venta. Te ayudamos a encontrar la que de verdad va a sobrevivir en tu casa — con luz, ritmo de riego y nivel de cariño incluidos — y un Club de Riego que te lo recuerda todo.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4 mb-12">
+      <a href="#match" class="btn-primary">Encuentra tu planta ideal</a>
+      <a href="#semana" class="px-7 py-3.5 rounded-full border border-[var(--line)] font-semibold text-[var(--ink)] hover:border-[var(--ink-soft)] transition">Ver plantas de la semana</a>
+    </div>
+    <div class="flex flex-wrap justify-center gap-8 text-sm text-[var(--ink-soft)]">
+      <div class="flex items-center gap-2"><span class="pulse-dot"></span> 5 variedades nuevas esta semana</div>
+      <div class="flex items-center gap-2"><span class="leaf font-bold">★ 4.9</span> valoración media (274 reseñas)</div>
+      <div class="flex items-center gap-2">🪴 cultivo propio, sin pesticidas</div>
+    </div>
+  </div>
+</header>
+
+<!-- MATCH DE PLANTAS -->
+<section id="match" class="py-20 px-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="leaf font-bold uppercase tracking-widest text-sm">Encuentra tu planta</span>
+      <h2 class="text-3xl md:text-5xl font-medium mt-2">Tres preguntas y sabemos cuál va a sobrevivir en tu casa</h2>
+      <p class="text-[var(--ink-soft)] mt-3 max-w-xl mx-auto">Nada de comprar una planta bonita y verla morir en un mes: cruzamos tu luz, tu ritmo y tu nivel de paciencia con lo que tenemos esta semana en el vivero.</p>
+    </div>
+
+    <div class="card p-8 md:p-10">
+      <div class="flex items-center gap-2 mb-8">
+        <div class="flex-1 bar-track"><div id="quiz-progress" class="bar-fill" style="width:0%"></div></div>
+        <span id="quiz-step-label" class="text-sm text-[var(--ink-soft)] font-semibold whitespace-nowrap">Pregunta 1 de 3</span>
+      </div>
+
+      <div id="quiz-questions">
+
+        <div class="quiz-q" data-q="0">
+          <h3 class="text-xl md:text-2xl font-medium mb-6">¿Cuánta luz entra en tu casa?</h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <button class="opt-btn" data-q="0" data-v="mucha">☀️ Sol directo varias horas</button>
+            <button class="opt-btn" data-q="0" data-v="media">🌤️ Luz indirecta agradable</button>
+            <button class="opt-btn" data-q="0" data-v="poca">🌥️ Más bien poca, sinceramente</button>
+            <button class="opt-btn" data-q="0" data-v="ns">🤷 Ni idea, nunca me he fijado</button>
+          </div>
+        </div>
+
+        <div class="quiz-q hidden" data-q="1">
+          <h3 class="text-xl md:text-2xl font-medium mb-6">¿Cómo es tu relación con el riego?</h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <button class="opt-btn" data-q="1" data-v="constante">📅 Disciplinado, no se me olvida</button>
+            <button class="opt-btn" data-q="1" data-v="irregular">🌀 Cuando me acuerdo, vamos</button>
+            <button class="opt-btn" data-q="1" data-v="olvidadizo">😅 Se me olvida con facilidad</button>
+            <button class="opt-btn" data-q="1" data-v="viajero">🧳 Viajo bastante, fuera de casa</button>
+          </div>
+        </div>
+
+        <div class="quiz-q hidden" data-q="2">
+          <h3 class="text-xl md:text-2xl font-medium mb-6">¿Qué buscas para tu rincón verde?</h3>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <button class="opt-btn" data-q="2" data-v="impacto">🌴 Algo grande que dé el cante</button>
+            <button class="opt-btn" data-q="2" data-v="colgante">🍃 Algo colgante, de estantería</button>
+            <button class="opt-btn" data-q="2" data-v="flores">🌸 Que dé flor de vez en cuando</button>
+            <button class="opt-btn" data-q="2" data-v="facil">🪴 Lo más fácil posible, sin dramas</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="quiz-result" class="hidden text-center py-6">
+        <p class="text-[var(--terracotta)] font-bold uppercase tracking-widest text-sm mb-3">Tu planta ideal es...</p>
+        <div id="result-emoji" class="text-7xl mb-4"></div>
+        <h3 id="result-name" class="text-2xl md:text-4xl font-medium leaf mb-4"></h3>
+        <p id="result-desc" class="text-[var(--ink-soft)] max-w-xl mx-auto mb-8"></p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button id="quiz-restart" class="btn-primary">Repetir el test</button>
+          <a href="#riego" class="px-7 py-3.5 rounded-full border border-[var(--line)] font-semibold text-[var(--ink)] hover:border-[var(--ink-soft)] transition">Ver el Club de Riego</a>
+        </div>
+      </div>
+
+      <div id="quiz-nav" class="flex justify-between items-center mt-8">
+        <button id="quiz-back" class="text-sm font-semibold text-[var(--ink-soft)] hover:text-[var(--ink)] transition disabled:opacity-0" disabled>← Anterior</button>
+        <span class="text-xs text-[var(--ink-soft)]">Elige una opción para continuar</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLUB DE RIEGO -->
+<section id="riego" class="py-20 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="text-[var(--terracotta)] font-bold uppercase tracking-widest text-sm">Club de Riego</span>
+      <h2 class="text-3xl md:text-5xl font-medium mt-2">Tu cartilla verde, sin que se te muera nada</h2>
+      <p class="text-[var(--ink-soft)] mt-3 max-w-xl mx-auto">Cada planta que te llevas suma una hoja a tu cartilla — y te apuntamos a recordatorios de riego a tu ritmo. Junta 8 hojas y la próxima maceta pequeña va de regalo.</p>
+    </div>
+
+    <div class="card p-8 md:p-10">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div>
+          <p class="text-sm text-[var(--ink-soft)]">Cartilla de</p>
+          <p class="text-xl font-semibold" style="font-family:'Newsreader',serif">Inés — socia desde abril</p>
+        </div>
+        <span class="glass rounded-full px-4 py-1.5 text-xs font-semibold text-[var(--ink-soft)]">5 / 8 hojas</span>
+      </div>
+
+      <div class="grid grid-cols-4 sm:grid-cols-8 gap-3 mb-8">
+        <div class="leaf-stamp filled leaf-bg text-[#fbf8f0]">🌿</div>
+        <div class="leaf-stamp filled leaf-bg text-[#fbf8f0]">🌿</div>
+        <div class="leaf-stamp filled leaf-bg text-[#fbf8f0]">🌿</div>
+        <div class="leaf-stamp filled leaf-bg text-[#fbf8f0]">🌿</div>
+        <div class="leaf-stamp filled leaf-bg text-[#fbf8f0]">🌿</div>
+        <div class="leaf-stamp empty">+</div>
+        <div class="leaf-stamp empty">+</div>
+        <div class="leaf-stamp empty">+</div>
+      </div>
+
+      <div class="bar-track mb-3">
+        <div id="loyalty-bar" class="bar-fill" style="width:0%"></div>
+      </div>
+      <div class="flex items-center justify-between text-sm text-[var(--ink-soft)] mb-6">
+        <span>Progreso del club</span>
+        <span id="loyalty-pct" class="font-bold">0%</span>
+      </div>
+
+      <div class="glass rounded-2xl px-6 py-4 text-center">
+        <p class="font-bold text-lg">¡Te faltan 3 hojas para tu maceta de regalo! 🪴</p>
+        <p class="text-[var(--ink-soft)] text-sm mt-1">Cuéntanos en tienda qué planta te llevas y sumamos la hoja al momento — y te avisamos cuándo tienes que regar la última que compraste.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANTAS DE LA SEMANA -->
+<section id="semana" class="py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="leaf font-bold uppercase tracking-widest text-sm">Vivero de la semana</span>
+      <h2 class="text-3xl md:text-5xl font-medium mt-2">Lo que está en su mejor momento ahora mismo</h2>
+      <p class="text-[var(--ink-soft)] mt-3 max-w-xl mx-auto">Cultivamos en lotes pequeños y rotamos según temporada — esto es lo que tenemos listo para salir de casa esta semana.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <div class="card p-6">
+        <div class="pot w-20 h-20 mb-5" style="background:linear-gradient(145deg,#dbe7d3,#7ea374)">🌴</div>
+        <h3 class="font-semibold text-lg mb-1" style="font-family:'Newsreader',serif">Strelitzia Nicolai</h3>
+        <p class="text-[var(--ink-soft)] text-sm mb-4">El ave del paraíso de hoja grande: impacto inmediato en cualquier salón con buena luz. Crece rápido y da mucho que hablar.</p>
+        <span class="text-xs glass rounded-full px-3 py-1 text-[var(--ink-soft)]">☀️ Mucha luz · Para impactar</span>
+      </div>
+
+      <div class="card p-6">
+        <div class="pot w-20 h-20 mb-5" style="background:linear-gradient(145deg,#e7ddc9,#c1693f)">🍃</div>
+        <h3 class="font-semibold text-lg mb-1" style="font-family:'Newsreader',serif">Pothos Dorado en Cesta Colgante</h3>
+        <p class="text-[var(--ink-soft)] text-sm mb-4">Hojas en cascada, crece en casi cualquier rincón y perdona los riegos olvidados. La planta perfecta para empezar sin miedo.</p>
+        <span class="text-xs glass rounded-full px-3 py-1 text-[var(--ink-soft)]">🌥️ Poca luz · Indestructible</span>
+      </div>
+
+      <div class="card p-6">
+        <div class="pot w-20 h-20 mb-5" style="background:linear-gradient(145deg,#f6e3df,#d97a91)">🌸</div>
+        <h3 class="font-semibold text-lg mb-1" style="font-family:'Newsreader',serif">Anthurium Rosa de Interior</h3>
+        <p class="text-[var(--ink-soft)] text-sm mb-4">Flores de un rosa intenso casi todo el año si le das luz indirecta y constancia. Para quien quiere color sin salir al jardín.</p>
+        <span class="text-xs glass rounded-full px-3 py-1 text-[var(--ink-soft)]">🌤️ Luz media · Da flor</span>
+      </div>
+
+      <div class="card p-6">
+        <div class="pot w-20 h-20 mb-5" style="background:linear-gradient(145deg,#dde6da,#5f8567)">🌵</div>
+        <h3 class="font-semibold text-lg mb-1" style="font-family:'Newsreader',serif">Trío de Cactus de Mesa</h3>
+        <p class="text-[var(--ink-soft)] text-sm mb-4">Tres variedades distintas en macetas de barro a juego. Riego cada dos o tres semanas y listo — ideales para escritorios.</p>
+        <span class="text-xs glass rounded-full px-3 py-1 text-[var(--ink-soft)]">😅 Olvidadizos · Sin dramas</span>
+      </div>
+
+      <div class="card p-6">
+        <div class="pot w-20 h-20 mb-5" style="background:linear-gradient(145deg,#e3ead9,#3f6b4f)">🌿</div>
+        <h3 class="font-semibold text-lg mb-1" style="font-family:'Newsreader',serif">Monstera Deliciosa Joven</h3>
+        <p class="text-[var(--ink-soft)] text-sm mb-4">La de las hojas con agujeros que todos reconocen. Crece con ganas, agradece un tutor y se convierte en la protagonista de la sala.</p>
+        <span class="text-xs glass rounded-full px-3 py-1 text-[var(--ink-soft)]">🌤️ Luz media · La más pedida</span>
+      </div>
+
+      <div class="card p-6">
+        <div class="pot w-20 h-20 mb-5" style="background:linear-gradient(145deg,#efe6d6,#bfa05f)">🪴</div>
+        <h3 class="font-semibold text-lg mb-1" style="font-family:'Newsreader',serif">Olivo de Maceta Mediterráneo</h3>
+        <p class="text-[var(--ink-soft)] text-sm mb-4">Cultivado al aire libre en nuestro patio, listo para terraza o balcón soleado. Resistente, longevo y con mucho carácter.</p>
+        <span class="text-xs glass rounded-full px-3 py-1 text-[var(--ink-soft)]">☀️ Exterior · De por vida</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- OPINIONES -->
+<section id="opiniones" class="py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="text-[var(--terracotta)] font-bold uppercase tracking-widest text-sm">Lo que dicen las plantas (y sus dueños)</span>
+      <h2 class="text-3xl md:text-5xl font-medium mt-2">Cuatro opiniones que no se han marchitado</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+      <div class="card p-6 text-center">
+        <p class="text-3xl font-medium leaf mb-1" style="font-family:'Newsreader',serif">4.9 ★</p>
+        <p class="text-sm text-[var(--ink-soft)]">valoración media en Google</p>
+      </div>
+      <div class="card p-6 text-center">
+        <p class="text-3xl font-medium leaf mb-1" style="font-family:'Newsreader',serif">+3.100</p>
+        <p class="text-sm text-[var(--ink-soft)]">plantas que han salido de casa este año</p>
+      </div>
+      <div class="card p-6 text-center">
+        <p class="text-3xl font-medium leaf mb-1" style="font-family:'Newsreader',serif">42</p>
+        <p class="text-sm text-[var(--ink-soft)]">variedades distintas cultivadas en 2026</p>
+      </div>
+      <div class="card p-6 text-center">
+        <p class="text-3xl font-medium leaf mb-1" style="font-family:'Newsreader',serif">980+</p>
+        <p class="text-sm text-[var(--ink-soft)]">socios en el Club de Riego</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="card p-6">
+        <p class="text-[var(--ink)] mb-4">"Maté tres plantas seguidas antes de venir aquí. Hice el test, me llevé el pothos colgante y ya va para ocho meses sano. Cambió mi vida en casa, lo digo en serio."</p>
+        <p class="font-semibold text-sm" style="font-family:'Newsreader',serif">— Lola V. <span class="text-[var(--ink-soft)] font-normal not-italic">· vecina del Brillante</span></p>
+      </div>
+      <div class="card p-6">
+        <p class="text-[var(--ink)] mb-4">"Lo del Club de Riego con recordatorios suena a tontería hasta que te llega el aviso justo el día que tu monstera lo necesitaba. Ahora no se me olvida ni una."</p>
+        <p class="font-semibold text-sm" style="font-family:'Newsreader',serif">— Pablo R. <span class="text-[var(--ink-soft)] font-normal not-italic">· Ciudad Jardín</span></p>
+      </div>
+      <div class="card p-6">
+        <p class="text-[var(--ink)] mb-4">"Se nota que las cuidan de verdad antes de venderlas: llegan fuertes, con raíz sana y consejos escritos a mano en la etiqueta. Eso no lo encuentras en una gran superficie."</p>
+        <p class="font-semibold text-sm" style="font-family:'Newsreader',serif">— Carmen D. <span class="text-[var(--ink-soft)] font-normal not-italic">· Centro</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="py-20 px-6">
+  <div class="max-w-4xl mx-auto card p-12 text-center relative overflow-hidden">
+    <div class="absolute inset-0 -z-10" style="background:radial-gradient(circle at 28% 30%, rgba(63,107,79,.14), transparent 55%), radial-gradient(circle at 76% 72%, rgba(193,105,63,.12), transparent 55%);"></div>
+    <h2 class="text-3xl md:text-5xl font-medium mb-4">¿Vienes a buscar tu próxima planta?</h2>
+    <p class="text-[var(--ink-soft)] max-w-xl mx-auto mb-8">Te esperamos en el patio con las manos en la tierra y consejos de sobra. Y si nos sigues en redes, te avisamos cada vez que entra una variedad nueva.</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="#match" class="btn-primary">Hacer el test de plantas</a>
+      <a href="#riego" class="px-7 py-3.5 rounded-full border border-[var(--line)] font-semibold text-[var(--ink)] hover:border-[var(--ink-soft)] transition">Unirme al Club de Riego</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-10 px-6 border-t border-neutral-700">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--ink-soft)]">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-full leaf-bg flex items-center justify-center font-black text-[#fbf8f0] text-xs" style="font-family:'Newsreader',serif">F</div>
+      <span class="font-semibold text-[var(--ink)]" style="font-family:'Newsreader',serif">Fernly</span> — vivero urbano · Córdoba
+    </div>
+    <p>Calle Doce de Octubre, patio interior · Abierto de 10:00 a 14:00 y 17:30 a 20:30</p>
+    <p>© 2026 Fernly. Cultivado despacio, elegido contigo.</p>
+  </div>
+</footer>
+
+<script>
+// ---------- HOJAS A LA DERIVA ----------
+(() => {
+  const wrap = document.getElementById('leaves');
+  const glyphs = ['🌿','🍃','🌱'];
+  const n = 10;
+  for (let i = 0; i < n; i++){
+    const el = document.createElement('span');
+    el.className = 'leafdrift';
+    el.textContent = glyphs[i % glyphs.length];
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.fontSize = (1.1 + Math.random() * 1.3) + 'rem';
+    el.style.animationDuration = (16 + Math.random() * 14) + 's';
+    el.style.animationDelay = (-Math.random() * 28) + 's';
+    wrap.appendChild(el);
+  }
+})();
+
+// ---------- TEST "ENCUENTRA TU PLANTA" ----------
+const answers = [null, null, null];
+let currentQ = 0;
+const totalQ = 3;
+
+const questions = document.querySelectorAll('.quiz-q');
+const progressBar = document.getElementById('quiz-progress');
+const stepLabel = document.getElementById('quiz-step-label');
+const backBtn = document.getElementById('quiz-back');
+const resultBox = document.getElementById('quiz-result');
+const quizNav = document.getElementById('quiz-nav');
+const restartBtn = document.getElementById('quiz-restart');
+
+const results = {
+  'mucha|constante|impacto':    { emoji:'🌴', name:'Strelitzia Nicolai', desc:'Tienes la luz, la disciplina y quieres que se note: esta ave del paraíso de hoja grande va a convertirse en la protagonista de tu salón.' },
+  'mucha|constante|flores':     { emoji:'🌸', name:'Anthurium Rosa de Interior', desc:'Con tu luz y tu constancia, esta planta te va a devolver flores casi todo el año. Una apuesta segura para quien cuida de verdad.' },
+  'mucha|viajero|facil':        { emoji:'🪴', name:'Olivo de Maceta Mediterráneo', desc:'Aguanta sol, aguanta ausencias y mejora con los años. Perfecto para quien tiene buena luz pero pasa temporadas fuera.' },
+  'media|constante|impacto':    { emoji:'🌿', name:'Monstera Deliciosa Joven', desc:'Luz media, constancia y ganas de impacto: la combinación perfecta para que esta monstera crezca rápido y dé que hablar.' },
+  'media|irregular|facil':      { emoji:'🍃', name:'Pothos Dorado en Cesta Colgante', desc:'Perdona los riegos irregulares y crece en cascada casi sin pedir nada a cambio. La planta ideal para coger ritmo sin agobios.' },
+  'media|constante|flores':     { emoji:'🌸', name:'Anthurium Rosa de Interior', desc:'Con luz indirecta agradable y un riego constante, vas a tener flor casi todo el año. Justo lo que estabas buscando.' },
+  'poca|olvidadizo|facil':      { emoji:'🍃', name:'Pothos Dorado en Cesta Colgante', desc:'Poca luz, riegos que se olvidan… y aun así esta planta sigue para adelante. Es, literalmente, a prueba de despistes.' },
+  'poca|olvidadizo|impacto':    { emoji:'🌵', name:'Trío de Cactus de Mesa', desc:'No necesitan casi luz directa ni atención constante, y aun así dan personalidad a cualquier rincón. Hechos para ti.' },
+  'poca|viajero|colgante':      { emoji:'🍃', name:'Pothos Dorado en Cesta Colgante', desc:'Aguanta semanas sin ti, crece en cascada y queda perfecta colgada cerca de una ventana con poca luz. Tu compañera de viaje ideal.' },
+  'ns|olvidadizo|facil':        { emoji:'🌵', name:'Trío de Cactus de Mesa', desc:'Si no estás seguro de tu luz ni de tu memoria de riego, empieza por aquí: tres variedades resistentes que perdonan casi cualquier despiste.' },
+  'ns|irregular|colgante':      { emoji:'🍃', name:'Pothos Dorado en Cesta Colgante', desc:'No hace falta que sepas de luces ni de riegos: esta planta se adapta a casi cualquier rincón y te enseña sobre la marcha.' },
+  'mucha|irregular|colgante':   { emoji:'🌿', name:'Monstera Deliciosa Joven', desc:'Con esa luz que tienes, esta planta va a crecer rápido aunque el riego sea un poco irregular. Solo necesita un tutor y espacio.' },
+};
+
+const fallback = { emoji:'🪴', name:'Pothos Dorado en Cesta Colgante', desc:'Nuestra recomendación segura para casi cualquier casa: crece en cascada, perdona despistes y es prácticamente imposible que no te enamore.' };
+
+function updateProgress(){
+  const pct = Math.round((currentQ / totalQ) * 100);
+  progressBar.style.width = pct + '%';
+  stepLabel.textContent = currentQ < totalQ ? `Pregunta ${currentQ + 1} de ${totalQ}` : 'Completado';
+}
+
+function showQuestion(i){
+  questions.forEach(q => q.classList.add('hidden'));
+  resultBox.classList.add('hidden');
+  quizNav.classList.remove('hidden');
+  const target = document.querySelector(`.quiz-q[data-q="${i}"]`);
+  if (target){
+    target.classList.remove('hidden');
+    target.classList.add('fade-in');
+  }
+  backBtn.disabled = i === 0;
+  updateProgress();
+}
+
+document.querySelectorAll('.opt-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const q = parseInt(btn.dataset.q, 10);
+    const v = btn.dataset.v;
+    answers[q] = v;
+
+    document.querySelectorAll(`.opt-btn[data-q="${q}"]`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    setTimeout(() => {
+      if (q < totalQ - 1){
+        currentQ = q + 1;
+        showQuestion(currentQ);
+      } else {
+        currentQ = totalQ;
+        revealResult();
+      }
+    }, 320);
+  });
+});
+
+backBtn.addEventListener('click', () => {
+  if (currentQ > 0){
+    currentQ -= 1;
+    showQuestion(currentQ);
+  }
+});
+
+function revealResult(){
+  questions.forEach(q => q.classList.add('hidden'));
+  quizNav.classList.add('hidden');
+  updateProgress();
+
+  const key = answers.join('|');
+  const result = results[key] || fallback;
+
+  document.getElementById('result-emoji').textContent = result.emoji;
+  document.getElementById('result-name').textContent = result.name;
+  document.getElementById('result-desc').textContent = result.desc;
+
+  resultBox.classList.remove('hidden');
+  resultBox.classList.remove('pop-in');
+  void resultBox.offsetWidth;
+  resultBox.classList.add('pop-in');
+}
+
+restartBtn.addEventListener('click', () => {
+  answers[0] = answers[1] = answers[2] = null;
+  currentQ = 0;
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+  showQuestion(0);
+});
+
+showQuestion(0);
+
+// ---------- CARTILLA DEL CLUB DE RIEGO ----------
+window.addEventListener('DOMContentLoaded', () => {
+  const bar = document.getElementById('loyalty-bar');
+  const pct = document.getElementById('loyalty-pct');
+  requestAnimationFrame(() => {
+    bar.style.width = '62%';
+    pct.textContent = '62%';
+  });
+});
+</script>
+
+</body>
+</html>
